@@ -13,21 +13,53 @@ class File:
 Task 1
 """
 def leafFiles(files: list[File]) -> list[str]:
-    return []
+    # Convert to set for amortised O(1) deletion and access
+    noOutgoingEdgeFiles = set(map(lambda file: file.id, files))
+    # Remove files that are parents for other nodes from that set
+    for file in files:
+        if file.parent in noOutgoingEdgeFiles:
+            noOutgoingEdgeFiles.remove(file.parent)
+    # Filter to just files which have an id in our set
+    return list(map(lambda file: file.name, filter(lambda file: file.id in noOutgoingEdgeFiles, files)))
 
 
 """
 Task 2
 """
 def kLargestCategories(files: list[File], k: int) -> list[str]:
-    return []
+    categoryCounts = {}
+    for file in files:
+        for category in file.categories:
+            categoryCounts[category] = categoryCounts.get(category, 0) + 1
+    # Negate the count field to put it in decreasing order
+    return list(map(lambda categoryTuple: categoryTuple[0], sorted(categoryCounts.items(), key=lambda categoryTuple: (-categoryTuple[1], categoryTuple[0]))))[:min(k, len(files))]
 
 
 """
 Task 3
 """
+
+def dfs(graph, file):
+    if file.id not in graph:
+        return file.size
+    total = 0
+    for child in graph[file.id]:
+        total += dfs(graph, child)
+    return total + file.size
+
 def largestFileSize(files: list[File]) -> int:
-    return 0
+    # Create a graph/tree like structure with the edges flipped to make traversal easier
+    graph = {}
+    for file in files:
+        if file.parent not in graph:
+            graph[file.parent] = []
+        graph[file.parent].append(file)
+        
+    maximumFileSize = 0
+    for file in files:
+        maximumFileSize = max(dfs(graph, file), maximumFileSize)
+            
+    return maximumFileSize
 
 
 if __name__ == '__main__':
