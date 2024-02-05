@@ -1,2 +1,5 @@
 Please detail the instructions to view your solution here:
 
+cd frontendAssessment
+npm install
+npm run dev
