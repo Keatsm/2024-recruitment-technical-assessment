@@ -3,3 +3,5 @@ Please detail the instructions to view your solution here:
 cd frontendAssessment
 npm install
 npm run dev
+
+// Note that since we didn't need to make the page responsive, I'm not sure how it will look on resolutions that aren't 2560x1440
